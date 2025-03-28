@@ -4,12 +4,13 @@ import { useState } from 'react';
 
 function MainMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
   const handleClick = ()=>{
     setIsMenuOpen(!isMenuOpen);
   }
 
   return (
-    <nav className="bg-green-300 pr-12 relative">
+    <nav className="pr-12 relative">
       <div className='block md:hidden absolute right-4 top-2' onClick={handleClick}>
         <FontAwesomeIcon icon={faBars}/>
       </div>
