@@ -1,20 +1,27 @@
+import {useEffect, useState} from 'react';
 
-function api() {
-  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+function weatherApi(country, city) {
 
-  return fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&units=metric&lang=es&APPID=${API_KEY}`)
-  .then(res => res.json())
-  .then((data)=>{
-    const newArray = data.map((item) => {
-      return{
-        city: item.name, 
-        weather: item.weather.main,
-        temperature: item.main.temp,
-        sensation: item.main.feels_like        
+  useEffect(() => {
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null);
+
+    const fetchData = async () => {
+      try{
+        const res = await fetch(`http://localhost:5001/api/weather/${country}/${city}`);
+        const dataJson = await res.json();
+
+        setData(dataJson);
+        
+      } catch (error){
+        setError(error.toString());
       }
-    });
-    return newArray;
-  });
+    } 
+
+  fetchData()},[country, city]);
+
+  return {data, error};
+  
 };
 
-export default api;
+export default weatherApi;
