@@ -1,7 +1,6 @@
 //IMPORTS *
 const express = require("express");
 const cors = require("cors");
-//const mysql = require('mysql2/promise'); importar el módulo de promesas de msql2
 
 //CREAR SERVIDOR *
 const server = express();
@@ -9,22 +8,34 @@ const server = express();
 //CONFIGURAR SERVIDOR *
 server.use(cors());
 server.use(express.json());
-server.set('view engine', 'ejs');
 require("dotenv").config();
 
 //PUERTO *
 const PORT = 5001; 
 server.listen(PORT, ()=>{
-  console.log(`Servidor corriendo por http://localhost:${PORT}`);
+  console.log(`Server listening at http://localhost:${PORT}`);
 })
 
+function clearRecord(json){
+  return{
+    city: json.name, 
+    weather: json.weather[0].main,
+    temperature: json.main.temp,
+    sensation: json.main.feels_like 
+  }
+}
+
 //ENDPOINTS
-//rutas endpoints --> API
-//GET, POST, PUT, DELETE
+server.get('/api/weather/:country/:city', async (req, res) =>{
+  const city =  req.params.city.toLowerCase();
+  const country = req.params.country.toLowerCase();
+  const API_KEY = process.env.WEATHER_API_KEY;
 
-
-
-
+  const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&units=metric&lang=es&APPID=${API_KEY}`);
+  const weatherData = await weatherResponse.json();
+  const weatherRecord = clearRecord(weatherData);
+  return res.json(weatherRecord);
+});  
 
 
 
